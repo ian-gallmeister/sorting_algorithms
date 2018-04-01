@@ -28,13 +28,9 @@ def sort( seq ):
       #print( '{} - pass_number={}, list_index={}'.format(seq, x, y) )
   return seq
 
-
-if __name__ == '__main__':
-  main()
-
 def main():
-  length = random.randint(100000,1000000000)
-  length = 100
+  #length = random.randint(100000,1000000000)
+  length = 10000
   unsorted = [ random.randint(0,1000) for i in range(length) ]
   bubblesorted = bubblesort( unsorted )
 

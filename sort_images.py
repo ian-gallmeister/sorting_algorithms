@@ -6,8 +6,8 @@ from skimage import color #For HSV
 from scipy.misc import imsave #For HSV
 
 FRAMES=160
-SORT_ALG='bubblesort'
-# bubblesort | 
+SORT_ALG='cocktailshakersort'
+# bubblesort | cocktailshakersort
 #SIZE='large' #512x512 from start
 SIZE='small' #Start with 16x16
 
@@ -112,6 +112,8 @@ def expand_image( img ):
 def sort( seq ): #To swap algorithms
   if SORT_ALG == 'bubblesort':
     return bubblesort( seq )
+  if SORT_ALG == 'cocktailshakersort':
+    return cocktailshakersort( seq )
 
 #Need to record each position swap as well
 #Moves smallest to the left, progressively 
@@ -125,11 +127,39 @@ def bubblesort( seq ):
         tmp = seq[y]
         seq[y] = seq[y-1]
         seq[y-1] = tmp
-      #print( '{} - pass_number={}, list_index={}'.format(seq, x, y) )
+  return seq, swaps
 
-def heapsort( seq ):
+def cocktailshakersort( seq ):
   swaps = []
+  #Determined by testing cause I'm lazy
+  largest = len(seq) - 1 #adjust indices for lists
+  smallest = 0
+  while True:
+    #Sort up.
+    for x in range( smallest, largest ):
+      if seq[x] > seq[x+1]:
+        swaps.append([x,x+1])
+        temp = seq[x]
+        seq[x] = seq[x+1]
+        seq[x+1] = temp
+    #Adjust end
+    largest -= 1
+    if largest <= smallest:
+      break
 
+    #Sort down.  
+    for x in range( largest, smallest, -1 ):
+      if seq[x] < seq[x-1]:
+        swaps.append([x,x-1])
+        temp = seq[x]
+        seq[x] = seq[x-1]
+        seq[x-1] = temp
+    #Adjust start
+    smallest += 1
+    if largest <= smallest:
+      break
+    
+  return seq, swaps
 
 if __name__ == '__main__':
   main()
