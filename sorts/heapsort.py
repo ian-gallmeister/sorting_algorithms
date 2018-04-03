@@ -9,6 +9,8 @@
 
 import random
 
+SHOW_LISTS=False
+
 def heapsort( seq ):
   length = len(seq)
   
@@ -72,8 +74,12 @@ def build_heap( seq, siz, root ):
 def main():
   #length = random.randint(100000,1000000000)
   length = 10000
-  unsorted = [ random.randint(0,1000) for i in range(length) ]
-  heapsorted = heapsort( unsorted )
+  seq = [ random.randint(0,1000) for i in range(length) ]
+  if SHOW_LISTS:
+    print( seq )
+  heapsort( seq )
+  if SHOW_LISTS:
+    print( seq )
 
 if __name__ == '__main__':
   main()

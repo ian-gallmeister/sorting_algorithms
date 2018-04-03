@@ -6,8 +6,8 @@ from skimage import color #For HSV
 from scipy.misc import imsave #For HSV
 
 FRAMES=160
-SORT_ALG='cocktailshakersort'
-# bubblesort | cocktailshakersort
+SORT_ALG='heapsort'
+# bubblesort | cocktailshakersort | heapsort
 #SIZE='large' #512x512 from start
 SIZE='small' #Start with 16x16
 
@@ -16,6 +16,7 @@ LARGE=512
 SMALL=16
 
 #TODO - implement more algorithms
+#TODO - edit bubblesort and cocktailshakersort not to return seq.  they just sort the damn thing
 
 def main():
 
@@ -114,6 +115,8 @@ def sort( seq ): #To swap algorithms
     return bubblesort( seq )
   if SORT_ALG == 'cocktailshakersort':
     return cocktailshakersort( seq )
+  if SORT_ALG == 'heapsort':
+    return 'lolno', heapsort( seq )
 
 #Need to record each position swap as well
 #Moves smallest to the left, progressively 
@@ -160,6 +163,47 @@ def cocktailshakersort( seq ):
       break
     
   return seq, swaps
+
+def heapsort( seq ):
+  swaps = []
+  length = len(seq)
+  
+  #Everything in order when gets to next set
+  for x in range(length, -1, -1):
+    build_heap( seq, length, x, swaps )
+
+  for x in range(length-1, 0, -1):
+    swaps.append( [0,x] )
+    tmp = seq[0]
+    seq[0] = seq[x]
+    seq[x] = tmp
+
+    #Leaving end alone, make re-heap everything
+    build_heap( seq, x, 0, swaps ) 
+
+  return swaps
+
+def build_heap( seq, siz, root, swaps ):
+  #track largest
+  largest = root
+
+  #check for right and left children
+  left = 2*largest + 1
+  right = 2*largest + 2
+
+  #if exist and larger, swap 
+  if left < siz and seq[left] > seq[largest]:
+    largest = left
+  if right < siz and seq[right] > seq[largest]:
+    largest = right
+
+  if root != largest:
+    swaps.append([root,largest])
+    temp = seq[root]
+    seq[root] = seq[largest]
+    seq[largest] = temp 
+    #Recursively make sure all leaves follow heap property
+    build_heap( seq, siz, largest, swaps )
 
 if __name__ == '__main__':
   main()

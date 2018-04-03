@@ -7,6 +7,8 @@
 
 import random
 
+SHOW_LISTS=False
+
 def setup():
   seq = []
   for x in range(11,0,-1):
@@ -51,7 +53,11 @@ def main():
   length = random.randint(100000,1000000000)
   length = 10000
   unsorted = [ random.randint(0,1000) for i in range(length) ]
+  if SHOW_LISTS:
+    print( unsorted )
   cocktailshaken = cocktailshaker( unsorted )
+  if SHOW_LISTS:
+    print( cocktailshaken )
 
 if __name__ == '__main__':
   main()

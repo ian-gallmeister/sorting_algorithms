@@ -6,6 +6,8 @@
 
 import random
 
+SHOW_LISTS=False
+
 def bubblesort( to_sort ):
   for final_position in range(len(to_sort)-1, 0, -1):  #len-1 so don't leave list
     for x in range(final_position):
@@ -32,7 +34,11 @@ def main():
   #length = random.randint(100000,1000000000)
   length = 10000
   unsorted = [ random.randint(0,1000) for i in range(length) ]
+  if SHOW_LISTS:
+    print( unsorted )
   bubblesorted = bubblesort( unsorted )
+  if SHOW_LISTS:
+    print( bubblesorted )
 
 if __name__ == '__main__':
   main()
