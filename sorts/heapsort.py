@@ -18,7 +18,6 @@ def heapsort( seq ):
     build_heap( seq, length, x )
 
   for x in range(length-1, 0, -1):
-    print( seq )
     tmp = seq[0]
     seq[0] = seq[x]
     seq[x] = tmp
@@ -67,7 +66,6 @@ def build_heap( seq, siz, root ):
     temp = seq[root]
     seq[root] = seq[largest]
     seq[largest] = temp 
-    #print(seq)
     #Recursively make sure all leaves follow heap property
     build_heap( seq, siz, largest )
 
