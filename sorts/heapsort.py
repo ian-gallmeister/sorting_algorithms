@@ -11,6 +11,8 @@ import random
 
 SHOW_LISTS=False
 
+#TODO - Bottom-up heapsort
+
 def heapsort( seq ):
   length = len(seq)
   

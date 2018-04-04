@@ -6,8 +6,8 @@ from skimage import color #For HSV
 from scipy.misc import imsave #For HSV
 
 FRAMES=160
-SORT_ALG='heapsort'
-# bubblesort | cocktailshakersort | heapsort
+SORT_ALG='quicksort'
+# bubblesort | cocktailshakersort | heapsort | quicksort
 #SIZE='large' #512x512 from start
 SIZE='small' #Start with 16x16
 
@@ -117,6 +117,9 @@ def sort( seq ): #To swap algorithms
     return cocktailshakersort( seq )
   if SORT_ALG == 'heapsort':
     return 'lolno', heapsort( seq )
+  if SORT_ALG == 'quicksort':
+    swaps = []
+    return 'lolno', quicksort( seq, 0, len(seq)-1, swaps )
 
 #Need to record each position swap as well
 #Moves smallest to the left, progressively 
@@ -204,6 +207,32 @@ def build_heap( seq, siz, root, swaps ):
     seq[largest] = temp 
     #Recursively make sure all leaves follow heap property
     build_heap( seq, siz, largest, swaps )
+
+#Hoare Algorithm, random pivots
+def quicksort( seq, low, high, swaps ):
+  if low < high:
+    sep, swaps = hor_partition( seq, low, high, swaps )  
+    # Separation not exactly in right spot, must keep sorting those same spots
+    swaps = quicksort( seq, low, sep, swaps )
+    swaps = quicksort( seq, sep+1, high, swaps )
+  return swaps
+
+def hor_partition( seq, low, high, swaps ):
+  pivot = seq[random.randint(low,high)]
+  low_index = low 
+  high_index = high  
+  while True:
+    while seq[high_index] > pivot:
+      high_index -= 1
+    while seq[low_index] < pivot:
+      low_index += 1
+    if low_index < high_index:
+      swaps.append( [low_index, high_index] )
+      seq[high_index],seq[low_index] = seq[low_index],seq[high_index]
+      high_index -= 1
+      low_index += 1
+    else:
+      return high_index, swaps
 
 if __name__ == '__main__':
   main()
