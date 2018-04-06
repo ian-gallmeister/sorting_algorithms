@@ -44,6 +44,7 @@ def merge( seq, start, middle, end ):
       index_l += 1
     else:
       merged.append( right_array[index_r] )
+      index_r += 1 
 
   merged += left_array[index_l:]
   merged += right_array[index_r:]
@@ -56,9 +57,10 @@ def main():
   seq = [ random.randint(0,length) for i in range(length) ]
   if SHOW_LISTS:
     print( seq )
-  mergesort( seq )
+  mergesort( seq, 0, len(seq) )
   if SHOW_LISTS:
     print( seq )
+
 
 if __name__ == '__main__':
   main()
