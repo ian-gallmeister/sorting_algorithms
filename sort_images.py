@@ -7,7 +7,7 @@ from scipy.misc import imsave #For HSV
 
 FRAMES=160
 SORT_ALG='quicksort'
-# bubblesort | cocktailshakersort | heapsort | quicksort
+# bubblesort | cocktailshakersort | heapsort | quicksort | insertionsort
 #SIZE='large' #512x512 from start
 SIZE='small' #Start with 16x16
 
@@ -113,11 +113,13 @@ def expand_image( img ):
 def sort( seq ): #To swap algorithms
   if SORT_ALG == 'bubblesort':
     return bubblesort( seq )
-  if SORT_ALG == 'cocktailshakersort':
+  elif SORT_ALG == 'cocktailshakersort':
     return cocktailshakersort( seq )
-  if SORT_ALG == 'heapsort':
+  elif SORT_ALG == 'insertionsort':
+    return 'lolno', insertionsort( seq )
+  elif SORT_ALG == 'heapsort':
     return 'lolno', heapsort( seq )
-  if SORT_ALG == 'quicksort':
+  elif SORT_ALG == 'quicksort':
     swaps = []
     return 'lolno', quicksort( seq, 0, len(seq)-1, swaps )
 
@@ -233,6 +235,15 @@ def hor_partition( seq, low, high, swaps ):
       low_index += 1
     else:
       return high_index, swaps
+
+def insertionsort( seq ):
+  swaps = []
+  for x in range( 1, len(seq) ):
+    for y in range(x, 0, -1):
+      if seq[y] < seq[y-1]:
+        swaps.append( [y,y-1] )
+        seq[y],seq[y-1] = seq[y-1],seq[y]
+  return swaps
 
 if __name__ == '__main__':
   main()

@@ -1,19 +1,32 @@
 #!/usr/bin/env python3
+#Start at bottom going up
+#From start, go down
+#Swap if current smaller than next lower
 
 import random
 
 SHOW_LISTS=False
 
 def insertionsort( seq ):
-  return seq
+  #Can't start at 0, nothing lower
+  for x in range( 1, len(seq) ):
+    #Stop one higher than end so don't go off end of list
+    for y in range(x, 0, -1):
+      if seq[y] < seq[y-1]:
+        seq[y],seq[y-1] = seq[y-1],seq[y]
+
+def isort( seq ):
+  for i in [ y for x in range( 1, len(seq) ) for y in range( x, 0, -1 ) ]:
+    if seq[i] < seq[i-1]: seq[i],seq[i-1] = seq[i-1],seq[i]
+
 
 def main():
   #length = random.randint(100000,1000000000)
   length = 10000
-  seq = [ random.randint(0,1000) for i in range(length) ]
+  seq = [ random.randint(0,length) for i in range(length) ]
   if SHOW_LISTS:
     print( seq )
-  seq = bubblesort( seq )
+  insertionsort( seq )
   if SHOW_LISTS:
     print( seq )
 
