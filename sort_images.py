@@ -7,7 +7,7 @@ from scipy.misc import imsave #For HSV
 
 FRAMES=160
 SORT_ALG='quicksort'
-# bubblesort | cocktailshakersort | heapsort | quicksort | insertionsort
+# bubblesort | cocktailshakersort | heapsort | quicksort | insertionsort | gnomesort | stupidsort
 #SIZE='large' #512x512 from start
 SIZE='small' #Start with 16x16
 
@@ -117,6 +117,8 @@ def sort( seq ): #To swap algorithms
     return cocktailshakersort( seq )
   elif SORT_ALG == 'insertionsort':
     return 'lolno', insertionsort( seq )
+  elif SORT_ALG == 'stupidsort' or SORT_ALG == 'gnomesort':
+    return 'lolno', stupidsort( seq )
   elif SORT_ALG == 'heapsort':
     return 'lolno', heapsort( seq )
   elif SORT_ALG == 'quicksort':
@@ -243,6 +245,20 @@ def insertionsort( seq ):
       if seq[y] < seq[y-1]:
         swaps.append( [y,y-1] )
         seq[y],seq[y-1] = seq[y-1],seq[y]
+  return swaps
+
+def stupidsort( seq ):
+  x = 0
+  swaps = []
+  while x < len(seq):
+    if x == 0:
+      x += 1
+    elif seq[x] >= seq[x-1]:
+      x += 1
+    else:
+      sorts.append([x,x-1])
+      seq[x],seq[x-1] = seq[x-1],seq[x]
+      x -= 1
   return swaps
 
 if __name__ == '__main__':
