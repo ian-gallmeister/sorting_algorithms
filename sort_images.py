@@ -6,8 +6,8 @@ from skimage import color #For HSV
 from scipy.misc import imsave #For HSV
 
 FRAMES=160
-SORT_ALG='quicksort'
-# bubblesort | cocktailshakersort | heapsort | quicksort | insertionsort | gnomesort | stupidsort
+SORT_ALG='mergesort'
+# bubblesort | cocktailshakersort | heapsort | quicksort | insertionsort | gnomesort | stupidsort | mergesort
 #SIZE='large' #512x512 from start
 SIZE='small' #Start with 16x16
 
@@ -66,6 +66,7 @@ def sort_rows( img ):
   max_moves = 0
   print( '{now} Sorting rows ...'.format(now=now()) )
   for i in range(img.shape[0]):
+    print( list(img[i,:,0]) )
     _, rowsort = sort( list(img[i,:,0]) )
     moves.append(rowsort)
     if len( rowsort ) > max_moves:
@@ -124,6 +125,9 @@ def sort( seq ): #To swap algorithms
   elif SORT_ALG == 'quicksort':
     swaps = []
     return 'lolno', quicksort( seq, 0, len(seq)-1, swaps )
+  elif SORT_ALG == 'mergesort':
+    swaps = []
+    return 'lolno', mergesort( seq, 0, len(seq), swaps )
 
 #Need to record each position swap as well
 #Moves smallest to the left, progressively 
@@ -259,6 +263,63 @@ def stupidsort( seq ):
       sorts.append([x,x-1])
       seq[x],seq[x-1] = seq[x-1],seq[x]
       x -= 1
+  return swaps
+
+def mergesort( seq, start, end, swaps ):
+  if end - start > 1:
+    middle = int( end + (start-end)/2 )
+    swaps = mergesort( seq, start, middle, swaps )
+    swaps = mergesort( seq, middle, end, swaps )
+  if end - start == 1:
+    pass
+  else:
+    swaps = merge(seq, start, middle, end, swaps)
+  return swaps
+  #Caused a Memory Error here with:
+  #swaps += mergesort( )
+  #and
+  #swaps += merge( )
+  #WHY?
+
+def merge( seq, start, middle, end, swaps ):
+  merged = []
+  index_l = start
+  index_r = middle
+
+  while index_l < middle and index_r < end:
+    if seq[index_l] <= seq[index_r]:
+      abs_posn_unsort = index_l
+      abs_posn_merged = start + len(merged)  #Index of location in merged, offset by locn of start
+      print( 'B/F_L Swap: {} <-> {}'.format(abs_posn_unsort, abs_posn_merged) )
+      swaps.append( [abs_posn_unsort,abs_posn_merged] )
+      merged.append( seq[index_l] )
+      index_l += 1
+    else:
+      abs_posn_unsort = index_r
+      abs_posn_merged = start + len(merged)  #Index of location in merged, ofset by locn of start
+      print( 'B/F_R Swap: {} <-> {}'.format(abs_posn_unsort, abs_posn_merged) )
+      swaps.append( [abs_posn_unsort,abs_posn_merged] )
+      merged.append( seq[index_r] )
+      index_r += 1 
+
+  if index_r == end:
+    while index_l < middle: 
+      abs_posn_unsort = index_l
+      abs_posn_merged = start + len(merged) 
+      merged.append(seq[index_l])
+      print( 'A/E_L Swap: {} <-> {}'.format(abs_posn_unsort, abs_posn_merged) )
+      swaps.append( [abs_posn_unsort,abs_posn_merged] )
+      index_l += 1
+  if index_l == middle:
+    while index_r < end:
+      abs_posn_unsort = index_r
+      abs_posn_merged = start + len(merged)
+      merged.append(seq[index_r])
+      print( 'A/E_R Swap: {} <-> {}'.format(abs_posn_unsort, abs_posn_merged) )
+      swaps.append( [abs_posn_unsort,abs_posn_merged] )
+      index_r += 1
+  
+  seq[start:end] = merged
   return swaps
 
 if __name__ == '__main__':

@@ -54,7 +54,7 @@ def merge( seq, start, middle, end ):
 def main():
   #length = random.randint(100000,1000000000)
   length = 10000
-  seq = [ random.randint(0,length) for i in range(length) ]
+  seq = [ 1/random.randint(0,length) for i in range(length) ]
   if SHOW_LISTS:
     print( seq )
   mergesort( seq, 0, len(seq) )
