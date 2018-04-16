@@ -7,7 +7,7 @@ from scipy.misc import imsave #For HSV
 
 FRAMES=160
 SORT_ALG='shellsort'
-# bubblesort | cocktailshakersort | heapsort | quicksort | insertionsort | gnomesort | stupidsort | shellsort
+# bubblesort | cocktailshakersort | heapsort | quicksort | insertionsort | gnomesort | stupidsort | shellsort | combsort
 #SIZE='large' #512x512 from start
 SIZE='small' #Start with 16x16
 
@@ -66,6 +66,7 @@ def sort_rows( img ):
   max_moves = 0
   print( '{now} Sorting rows ...'.format(now=now()) )
   for i in range(img.shape[0]):
+    print( list(img[i,:,0]) )
     _, rowsort = sort( list(img[i,:,0]) )
     moves.append(rowsort)
     if len( rowsort ) > max_moves:
@@ -126,6 +127,8 @@ def sort( seq ): #To swap algorithms
     return 'lolno', quicksort( seq, 0, len(seq)-1, swaps )
   elif SORT_ALG == 'shellsort':
     return 'lolno', shellsort( seq )
+  elif SORT_ALG == 'combsort':
+    return 'lolno', combsort( seq )
 
 #Need to record each position swap as well
 #Moves smallest to the left, progressively 
@@ -276,6 +279,28 @@ def shellsort( seq ):
         seq[y] = seq[y-gap]
         y -= gap
       seq[y] = temp
+  return swaps
+
+def combsort( seq ):
+  swaps = []
+  size = len(seq)
+  gap = len(seq)
+  shrink = 1.3
+  complete = False
+
+  while not complete:
+    gap = int(gap/shrink)
+    if gap <= 1:
+      gap = 1
+      complete = True #Turned false if any swaps happen
+  
+    index = 0
+    while index + gap < size:
+      if seq[index] > seq[index+gap]:
+        swaps.append([index,index+gap])
+        seq[index],seq[index+gap]=seq[index+gap],seq[index]
+        complete = False
+      index += 1
   return swaps
 
 if __name__ == '__main__':
