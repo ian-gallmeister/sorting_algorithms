@@ -6,8 +6,8 @@ from skimage import color #For HSV
 from scipy.misc import imsave #For HSV
 
 FRAMES=160
-SORT_ALG='quicksort'
-# bubblesort | cocktailshakersort | heapsort | quicksort | insertionsort | gnomesort | stupidsort
+SORT_ALG='shellsort'
+# bubblesort | cocktailshakersort | heapsort | quicksort | insertionsort | gnomesort | stupidsort | shellsort
 #SIZE='large' #512x512 from start
 SIZE='small' #Start with 16x16
 
@@ -124,6 +124,8 @@ def sort( seq ): #To swap algorithms
   elif SORT_ALG == 'quicksort':
     swaps = []
     return 'lolno', quicksort( seq, 0, len(seq)-1, swaps )
+  elif SORT_ALG == 'shellsort':
+    return 'lolno', shellsort( seq )
 
 #Need to record each position swap as well
 #Moves smallest to the left, progressively 
@@ -259,6 +261,21 @@ def stupidsort( seq ):
       sorts.append([x,x-1])
       seq[x],seq[x-1] = seq[x-1],seq[x]
       x -= 1
+  return swaps
+
+def shellsort( seq ):
+  swaps = []
+  gaps = [ 701, 301, 132, 57, 23, 10, 4, 1 ]
+  for gap in gaps:
+    for x in range(gap,len(seq)):
+      #print(seq)
+      temp = seq[x]
+      y = x
+      while y >= gap and seq[y-gap] > temp:
+        swaps.append([y,y-gap])
+        seq[y] = seq[y-gap]
+        y -= gap
+      seq[y] = temp
   return swaps
 
 if __name__ == '__main__':
