@@ -285,42 +285,30 @@ def merge( seq, start, middle, end, swaps ):
   merged = []
   index_l = start
   index_r = middle
+  start_array = seq[start:end]
 
   while index_l < middle and index_r < end:
     if seq[index_l] <= seq[index_r]:
-      abs_posn_unsort = index_l
-      abs_posn_merged = start + len(merged)  #Index of location in merged, offset by locn of start
-      print( 'B/F_L Swap: {} <-> {}'.format(abs_posn_unsort, abs_posn_merged) )
-      swaps.append( [abs_posn_unsort,abs_posn_merged] )
       merged.append( seq[index_l] )
       index_l += 1
     else:
-      abs_posn_unsort = index_r
-      abs_posn_merged = start + len(merged)  #Index of location in merged, ofset by locn of start
-      print( 'B/F_R Swap: {} <-> {}'.format(abs_posn_unsort, abs_posn_merged) )
-      swaps.append( [abs_posn_unsort,abs_posn_merged] )
       merged.append( seq[index_r] )
       index_r += 1 
 
-  if index_r == end:
-    while index_l < middle: 
-      abs_posn_unsort = index_l
-      abs_posn_merged = start + len(merged) 
-      merged.append(seq[index_l])
-      print( 'A/E_L Swap: {} <-> {}'.format(abs_posn_unsort, abs_posn_merged) )
-      swaps.append( [abs_posn_unsort,abs_posn_merged] )
-      index_l += 1
-  if index_l == middle:
-    while index_r < end:
-      abs_posn_unsort = index_r
-      abs_posn_merged = start + len(merged)
-      merged.append(seq[index_r])
-      print( 'A/E_R Swap: {} <-> {}'.format(abs_posn_unsort, abs_posn_merged) )
-      swaps.append( [abs_posn_unsort,abs_posn_merged] )
-      index_r += 1
-  
+  merged += seq[index_l:middle]
+  merged += seq[index_r:end] 
   seq[start:end] = merged
+
+  swaps = gen_swaps( start_array, merged, swaps )
+
   return swaps
+
+def gen_swaps( start_array, end_array, swaps ):
+  return swaps
+#5 3 7 4 1 2 8 6 -> 1 2 3 4 5 6 7 8
+#*       *
+#1 3 7 4 5 2 8 6
+#
 
 if __name__ == '__main__':
   main()
