@@ -6,8 +6,8 @@ from skimage import color #For HSV
 from scipy.misc import imsave #For HSV
 
 FRAMES=160
-SORT_ALG='mergesort'
-# bubblesort | cocktailshakersort | heapsort | quicksort | insertionsort | gnomesort | stupidsort | mergesort
+SORT_ALG='combsort'
+# bubblesort | cocktailshakersort | heapsort | quicksort | insertionsort | gnomesort | stupidsort | combsort
 #SIZE='large' #512x512 from start
 SIZE='small' #Start with 16x16
 
@@ -128,6 +128,8 @@ def sort( seq ): #To swap algorithms
   elif SORT_ALG == 'mergesort':
     swaps = []
     return 'lolno', mergesort( seq, 0, len(seq), swaps )
+  elif SORT_ALG == 'combsort':
+    return 'lolno', combsort( seq )
 
 #Need to record each position swap as well
 #Moves smallest to the left, progressively 
@@ -265,50 +267,27 @@ def stupidsort( seq ):
       x -= 1
   return swaps
 
-def mergesort( seq, start, end, swaps ):
-  if end - start > 1:
-    middle = int( end + (start-end)/2 )
-    swaps = mergesort( seq, start, middle, swaps )
-    swaps = mergesort( seq, middle, end, swaps )
-  if end - start == 1:
-    pass
-  else:
-    swaps = merge(seq, start, middle, end, swaps)
+def combsort( seq ):
+  swaps = []
+  size = len(seq)
+  gap = len(seq)
+  shrink = 1.3
+  complete = False
+
+  while not complete:
+    gap = int(gap/shrink)
+    if gap <= 1:
+      gap = 1
+      complete = True #Turned false if any swaps happen
+  
+    index = 0
+    while index + gap < size:
+      if seq[index] > seq[index+gap]:
+        swaps.append([index,index+gap])
+        seq[index],seq[index+gap]=seq[index+gap],seq[index]
+        complete = False
+      index += 1
   return swaps
-  #Caused a Memory Error here with:
-  #swaps += mergesort( )
-  #and
-  #swaps += merge( )
-  #WHY?
-
-def merge( seq, start, middle, end, swaps ):
-  merged = []
-  index_l = start
-  index_r = middle
-  start_array = seq[start:end]
-
-  while index_l < middle and index_r < end:
-    if seq[index_l] <= seq[index_r]:
-      merged.append( seq[index_l] )
-      index_l += 1
-    else:
-      merged.append( seq[index_r] )
-      index_r += 1 
-
-  merged += seq[index_l:middle]
-  merged += seq[index_r:end] 
-  seq[start:end] = merged
-
-  swaps = gen_swaps( start_array, merged, swaps )
-
-  return swaps
-
-def gen_swaps( start_array, end_array, swaps ):
-  return swaps
-#5 3 7 4 1 2 8 6 -> 1 2 3 4 5 6 7 8
-#*       *
-#1 3 7 4 5 2 8 6
-#
 
 if __name__ == '__main__':
   main()
