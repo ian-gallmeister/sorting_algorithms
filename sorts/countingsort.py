@@ -27,7 +27,6 @@ def countingsort( seq ):
 
   #Sort the thing.  Somehow
   for val in seq: 
-    print( 'val: {:<4} count_array[val]: {:<4}'.format(val,count_array[val]) )
     output_array[count_array[val]-1] = val
     count_array[val] -= 1
   print(output_array)
