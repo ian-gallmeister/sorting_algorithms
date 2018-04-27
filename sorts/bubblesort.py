@@ -18,7 +18,7 @@ def bubblesort( to_sort ):
   return to_sort
 
 #Need to record each position swap as well
-#Moves smallest to the left, progressively 
+#Moves smallest to the left, progressively
 #stops checking lowest as goes
 def sort( seq ):
   for x in range(len(seq)):

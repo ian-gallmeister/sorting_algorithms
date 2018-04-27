@@ -6,8 +6,8 @@ from skimage import color #For HSV
 from scipy.misc import imsave #For HSV
 
 FRAMES=160
-SORT_ALG='quicksort'
-# bubblesort | cocktailshakersort | heapsort | quicksort | insertionsort | gnomesort | stupidsort
+SORT_ALG='shellsort'
+# bubblesort | cocktailshakersort | heapsort | quicksort | insertionsort | gnomesort | stupidsort | shellsort | combsort
 #SIZE='large' #512x512 from start
 SIZE='small' #Start with 16x16
 
@@ -66,6 +66,7 @@ def sort_rows( img ):
   max_moves = 0
   print( '{now} Sorting rows ...'.format(now=now()) )
   for i in range(img.shape[0]):
+    print( list(img[i,:,0]) )
     _, rowsort = sort( list(img[i,:,0]) )
     moves.append(rowsort)
     if len( rowsort ) > max_moves:
@@ -124,6 +125,10 @@ def sort( seq ): #To swap algorithms
   elif SORT_ALG == 'quicksort':
     swaps = []
     return 'lolno', quicksort( seq, 0, len(seq)-1, swaps )
+  elif SORT_ALG == 'shellsort':
+    return 'lolno', shellsort( seq )
+  elif SORT_ALG == 'combsort':
+    return 'lolno', combsort( seq )
 
 #Need to record each position swap as well
 #Moves smallest to the left, progressively 
@@ -259,6 +264,43 @@ def stupidsort( seq ):
       sorts.append([x,x-1])
       seq[x],seq[x-1] = seq[x-1],seq[x]
       x -= 1
+  return swaps
+
+def shellsort( seq ):
+  swaps = []
+  gaps = [ 701, 301, 132, 57, 23, 10, 4, 1 ]
+  for gap in gaps:
+    for x in range(gap,len(seq)):
+      #print(seq)
+      temp = seq[x]
+      y = x
+      while y >= gap and seq[y-gap] > temp:
+        swaps.append([y,y-gap])
+        seq[y] = seq[y-gap]
+        y -= gap
+      seq[y] = temp
+  return swaps
+
+def combsort( seq ):
+  swaps = []
+  size = len(seq)
+  gap = len(seq)
+  shrink = 1.3
+  complete = False
+
+  while not complete:
+    gap = int(gap/shrink)
+    if gap <= 1:
+      gap = 1
+      complete = True #Turned false if any swaps happen
+  
+    index = 0
+    while index + gap < size:
+      if seq[index] > seq[index+gap]:
+        swaps.append([index,index+gap])
+        seq[index],seq[index+gap]=seq[index+gap],seq[index]
+        complete = False
+      index += 1
   return swaps
 
 if __name__ == '__main__':
